@@ -16,9 +16,11 @@ const Header = () => {
     <View style={container}>
       {canGoBack() && (
         <View style={arrowContainer}>
-          <Button>
-            <Icon name="sc-telegram" type="evilicon" color="#517fa4" />
-          </Button>
+          <Button
+            icon={<Icon name="arrow-back" size={24} />}
+            type="clear"
+            onPress={() => goBack()}
+          />
         </View>
       )}
       <View style={leftContainer}>
