@@ -17,3 +17,21 @@ export type RootStackParamList = {
 };
 
 export type PostImageNavigationProps = NativeStackNavigationProp<RootStackParamList, 'Detail'>;
+
+export type AddFoodModalProps = {
+  visible: boolean;
+  onClose: (shouldUpdate?: boolean) => void;
+};
+
+export type FormItemProps = {
+  title: string;
+  placeholder: string;
+  value: string;
+  onChangeText: (text: string) => void;
+};
+
+export type Food = {
+  calories: string;
+  name: string;
+  portion: string;
+};
