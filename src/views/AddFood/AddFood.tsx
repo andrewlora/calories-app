@@ -11,6 +11,7 @@ import FoodItem from '../../components/FoodItem';
 const AddFood = () => {
   const [foods, setFoods] = useState<Food[]>([]);
   const [visible, setVisible] = useState<boolean>(false);
+  const [search, setSearch] = useState<string>('');
   const {getFoods} = useFoodStorage();
   useEffect(() => {
     loadFoods();
@@ -32,6 +33,21 @@ const AddFood = () => {
       setFoods(foodsResponse);
     } catch (error) {
       console.error(error);
+      setFoods([]);
+    }
+  };
+
+  const handleSearchPress = async () => {
+    try {
+      const result = await getFoods();
+      setFoods(
+        result.filter((food: Food) =>
+          food.name.toLocaleLowerCase().trim().includes(search.toLocaleLowerCase().trim()),
+        ),
+      );
+    } catch (error) {
+      console.error(error);
+      setFoods([]);
     }
   };
 
@@ -60,9 +76,19 @@ const AddFood = () => {
       </View>
       <View style={searchContainer}>
         <View style={inputContainer}>
-          <Input placeholder="apples, pie, soda ..." />
+          <Input
+            placeholder="apples, pie, soda ..."
+            value={search}
+            onChangeText={(text: string) => setSearch(text)}
+          />
         </View>
-        <Button title="Search" radius="lg" color="#ade8af" titleStyle={searchButton} />
+        <Button
+          title="Search"
+          radius="lg"
+          color="#ade8af"
+          titleStyle={searchButton}
+          onPress={handleSearchPress}
+        />
       </View>
       <ScrollView style={content}>
         {foods?.map((food, index) => (
