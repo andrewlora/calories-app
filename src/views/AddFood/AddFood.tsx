@@ -27,6 +27,7 @@ const AddFood = () => {
     searchButton,
     content,
   } = styles;
+
   const loadFoods = async () => {
     try {
       const foodsResponse = await getFoods();
