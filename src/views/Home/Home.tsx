@@ -3,34 +3,19 @@ import React, {useCallback, useState} from 'react';
 import Header from '../../components/Header';
 import AddCalories from '../../components/AddCalories';
 import {useFocusEffect} from '@react-navigation/native';
-import {Food, TodayCaloriesProps} from '../../types';
+import {Food} from '../../types';
 import useFoodStorage from '../../hooks/useFoodStorage';
 import TodayCalories from '../../components/TodayCalories';
 import TodayFoods from '../../components/TodayFoods';
 
 const Home = () => {
-  const [todayFood, setTodayFood] = useState<Food[]>([]);
-  const [todayStatistics, setTodayStatistics] = useState<TodayCaloriesProps>({
-    total: 2000,
-    consumed: 0,
-    remaining: 2000,
-    percentage: 0,
-  });
   const {getTodayFood} = useFoodStorage();
-
-  const calculateTodayStatistics = useCallback(() => {
-    const total = 2000;
-    const consumed = todayFood.reduce((acc, food) => acc + Number(food.calories), 0);
-    const remaining = total - consumed;
-    const percentage = (consumed / total) * 100;
-    setTodayStatistics({total, consumed, remaining, percentage});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const [todayFood, setTodayFood] = useState<Food[]>([]);
 
   const loadTodayFood = useCallback(async () => {
     try {
       const todayFoodResponse = await getTodayFood();
-      setTodayFood(todayFoodResponse);
+      await setTodayFood(todayFoodResponse);
     } catch (error) {
       console.error(error);
       setTodayFood([]);
@@ -40,20 +25,19 @@ const Home = () => {
 
   useFocusEffect(
     useCallback(() => {
-      console.log('useFocusEffect');
+      // clearAll();
       loadTodayFood();
-      calculateTodayStatistics();
-    }, [loadTodayFood, calculateTodayStatistics]),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []),
   );
 
   const {container} = styles;
-
   return (
     <View style={container}>
       <Header />
       <AddCalories />
-      <TodayCalories {...todayStatistics} />
-      <TodayFoods foods={todayFood} />
+      <TodayCalories todayFood={todayFood} />
+      <TodayFoods foods={todayFood} onCompleteAddRemove={() => loadTodayFood()} />
     </View>
   );
 };

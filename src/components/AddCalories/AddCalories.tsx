@@ -8,7 +8,6 @@ import {RootStackParamList} from '../../types';
 const AddCalories = () => {
   const {navigate} = useNavigation<StackNavigationProp<RootStackParamList, 'Home'>>();
   const handleAddCaloriesPress = () => {
-    console.log('Add calories button pressed');
     navigate('AddFood');
   };
   const {container, leftContainer, rightContainer, caloriesTitle} = styles;

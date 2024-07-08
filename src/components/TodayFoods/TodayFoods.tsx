@@ -3,14 +3,19 @@ import React, {FC} from 'react';
 import {Food, TodayFoodsProps} from '../../types';
 import FoodItem from '../FoodItem';
 
-const TodayFoods: FC<TodayFoodsProps> = ({foods}) => {
+const TodayFoods: FC<TodayFoodsProps> = ({foods, onCompleteAddRemove}) => {
   const {container, title} = styles;
   return (
     <View style={container}>
       <Text style={title}>Foods</Text>
       <ScrollView contentContainerStyle={styles.content}>
         {foods?.map((food: Food, index) => (
-          <FoodItem key={index} {...food} />
+          <FoodItem
+            key={index}
+            {...food}
+            onCompleteAddRemove={onCompleteAddRemove}
+            indexPosition={index}
+          />
         ))}
       </ScrollView>
     </View>

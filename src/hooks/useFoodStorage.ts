@@ -2,15 +2,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Food} from '../types';
 import {isToday} from 'date-fns';
 const useFoodStorage = () => {
-  const FOOD_KEY = '@food:Key';
-  const FOOD_TODAY_KEY = '@food:Key';
+  const FOOD_KEY = '@food:key';
+  const FOOD_TODAY_KEY = '@food:today:key';
   const saveInfoToStorage = async (key: string, food: Food) => {
     try {
       const foods = await AsyncStorage.getItem(key);
       if (foods) {
-        const parsedFoods = JSON.parse(foods);
-        parsedFoods.push(food);
-        return await AsyncStorage.setItem(key, JSON.stringify(parsedFoods));
+        const savedFoods: Food[] = JSON.parse(foods) as Food[];
+        savedFoods.push(food);
+        return await AsyncStorage.setItem(key, JSON.stringify(savedFoods));
       } else {
         return await AsyncStorage.setItem(key, JSON.stringify([food]));
       }
@@ -22,9 +22,12 @@ const useFoodStorage = () => {
   const getInfoToStorage = async (key: string) => {
     try {
       const foods = await AsyncStorage.getItem(key);
-      return foods
-        ? (JSON.parse(foods) as Food[]).filter(food => food.date && isToday(new Date(food.date)))
-        : [];
+      if (key === FOOD_TODAY_KEY) {
+        return foods
+          ? (JSON.parse(foods) as Food[]).filter(food => food.date && isToday(new Date(food.date)))
+          : [];
+      }
+      return foods ? (JSON.parse(foods) as Food[]) : [];
     } catch (error) {
       console.log(error);
       return [];
@@ -42,7 +45,8 @@ const useFoodStorage = () => {
 
   const getFoods = async () => {
     try {
-      return getInfoToStorage(FOOD_KEY);
+      const foods = await getInfoToStorage(FOOD_KEY);
+      return foods;
     } catch (error) {
       console.log(error);
       return [];
@@ -67,7 +71,28 @@ const useFoodStorage = () => {
     }
   };
 
-  return {saveFood, getFoods, saveTodayFood, getTodayFood};
+  const removeTodayFood = async (indexFood: number) => {
+    try {
+      const foods = await getTodayFood();
+      const newFoods = foods.filter((food, index) => index !== indexFood);
+      console.log('newFoods: ', newFoods);
+      return await AsyncStorage.setItem(FOOD_TODAY_KEY, JSON.stringify(newFoods));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const clearAll = async () => {
+    try {
+      await AsyncStorage.clear();
+    } catch (e) {
+      // clear error
+    }
+
+    console.log('Done.');
+  };
+
+  return {saveFood, getFoods, saveTodayFood, getTodayFood, removeTodayFood, clearAll};
 };
 
 export default useFoodStorage;

@@ -37,13 +37,24 @@ export type Food = {
   date?: string;
 };
 
-export type TodayCaloriesProps = {
+export type TodayCaloriesResume = {
   total: number | string | undefined;
   consumed: number | string | undefined;
   remaining: number | string | undefined;
   percentage: number | undefined;
 };
 
+export type TodayCaloriesProps = {
+  todayFood: Food[];
+};
+
 export type TodayFoodsProps = {
   foods: Food[];
+  onCompleteAddRemove?: () => void;
+};
+
+export type FoodItemProps = Food & {
+  isAbleToAdd?: boolean;
+  onCompleteAddRemove?: () => void;
+  indexPosition?: number;
 };

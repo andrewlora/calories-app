@@ -15,6 +15,7 @@ const AddFood = () => {
   const {getFoods} = useFoodStorage();
   useEffect(() => {
     loadFoods();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const {
     container,
@@ -92,9 +93,7 @@ const AddFood = () => {
         />
       </View>
       <ScrollView style={content}>
-        {foods?.map((food, index) => (
-          <FoodItem key={index} {...food} />
-        ))}
+        {foods && foods.map((food, index) => <FoodItem key={index} {...food} isAbleToAdd />)}
       </ScrollView>
       <AddFoodModal visible={visible} onClose={handleModalClose} />
     </View>
